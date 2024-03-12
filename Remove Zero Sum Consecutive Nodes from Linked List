@@ -1,0 +1,46 @@
+Remove Zero Sum Consecutive Nodes from Linked List
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        ListNode* dummynode = new ListNode(0);
+        dummynode -> next = head;
+        unordered_map<int, ListNode*> maps;
+        int prefixsum = 0;
+        maps[0] = dummynode;
+
+        while(head != NULL){
+            prefixsum = prefixsum + head->val;
+            if(maps.find(prefixsum) != maps.end()){
+                ListNode* start = maps[prefixsum];
+                ListNode* temp = start;
+                int presum = prefixsum;
+
+                while(temp != head){
+                    temp = temp ->next;
+                    presum = presum + temp ->val;
+                    if(temp != head){
+                        maps.erase(presum);
+                    }
+                }
+                start ->next = head ->next;
+
+            }
+            else{
+                maps[prefixsum] = head;
+            }
+            head = head ->next;
+        }
+        return dummynode ->next;
+        
+    }
+};
